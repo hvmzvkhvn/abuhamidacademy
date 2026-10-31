@@ -1,0 +1,4 @@
+import http from 'node:http';import worker from './index.js';
+// Preview submissions stay in memory and are never transmitted.
+const records=new Map();const bucket={put:async(key,value)=>records.set(key,value)};
+http.createServer(async(req,res)=>{try{const chunks=[];for await(const c of req)chunks.push(c);const response=await worker.fetch(new Request('http://localhost:4173'+req.url,{method:req.method,headers:req.headers,...(!['GET','HEAD'].includes(req.method)?{body:Buffer.concat(chunks)}:{})}),{BUCKET:bucket});res.writeHead(response.status,Object.fromEntries(response.headers));res.end(Buffer.from(await response.arrayBuffer()));}catch{res.writeHead(500);res.end('Preview error');}}).listen(4173,'127.0.0.1',()=>console.log('Preview: http://localhost:4173\nPreview form submissions are temporary.'));
