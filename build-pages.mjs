@@ -1,10 +1,10 @@
 import {writeFile} from 'node:fs/promises';
 import worker from './index.js';
 const quotes = {
- '/about': ['Cooperate with one another in goodness and righteousness.', '5:2', 'https://quran.com/5/2'],
- '/classes': ['My Lord! Increase me in knowledge.', '20:114', 'https://quran.com/20/114'],
- '/teacher': ['Are those who know equal to those who do not know?', '39:9', 'https://quran.com/39/9'],
- '/contact': ['And made you into peoples and tribes so that you may ˹get to˺ know one another.', '49:13', 'https://quran.com/49/13'],
+ '/about': ['Knowledge of self is the key to the knowledge of God.', 'The Alchemy of Happiness · Chapter I', 'https://www.ghazali.org/books/alchemy/tah05.htm'],
+ '/classes': ['Knowledge without action is madness and action without knowledge is void.', 'Letter to a Disciple', 'https://www.emaanlibrary.com/wp-content/uploads/2019/10/letter-to-a-disciple-english.pdf'],
+ '/teacher': ['The most excellent state of the guiding teacher is his joining between knowledge and action.', 'Mukhtasar Ihya ‘Ulum al-Din · Knowledge and Learning', 'https://www.imamghazali.org/blog/etiquettes-teacher-student-mukhtasar'],
+ '/contact': ['For perfect happiness mere knowledge is not enough, unaccompanied by love.', 'The Alchemy of Happiness · Chapter VIII', 'https://sacred-texts.com/book/the-alchemy-of-happiness/chapter-viii-the-love-of-god'],
 };
 const paths=['/','/about','/classes','/teacher','/contact'];
 for(const path of paths){let html=await(await worker.fetch(new Request('https://abuhamid.academy'+path),{})).text();
@@ -20,8 +20,8 @@ const title=html.match(/<title>(.*?)<\/title>/)[1];
 const description=html.match(/<meta name="description" content="([^"]*)"/)[1];
 html=html.replace('</head>', `<link rel="canonical" href="${canonical}"><meta property="og:type" content="website"><meta property="og:site_name" content="Abu Hamid Academy"><meta property="og:title" content="${title}"><meta property="og:description" content="${description}"><meta property="og:url" content="${canonical}"><meta property="og:image" content="https://abuhamid.academy/social-preview.png"><meta property="og:image:width" content="554"><meta property="og:image:height" content="198"><meta property="og:image:alt" content="Abu Hamid Academy logo on a navy background"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="${title}"><meta name="twitter:description" content="${description}"><meta name="twitter:image" content="https://abuhamid.academy/social-preview.png"><meta name="twitter:image:alt" content="Abu Hamid Academy logo on a navy background"></head>`);
 if(quotes[path]) {
- const [text,verse,url]=quotes[path];
- const quote=`<section class="quote pattern"><div class="mark" aria-hidden="true">“</div><blockquote cite="${url}">${text}</blockquote><cite><a href="${url}">Qur’an ${verse} · excerpt</a><br><span style="font-size:10px;letter-spacing:1px">Translation: Dr Mustafa Khattab, The Clear Quran</span></cite></section>`;
+ const [text,work,url]=quotes[path];
+ const quote=`<section class="quote pattern"><div class="mark" aria-hidden="true">“</div><blockquote cite="${url}">${text}</blockquote><cite>Abu Hamid al-Ghazali<br><a href="${url}" style="font-size:10px;letter-spacing:1px">${work}</a></cite></section>`;
  const existing=/<section class="quote pattern">[\s\S]*?<\/section>/;
  html=existing.test(html)?html.replace(existing,quote):html.replace('</main>',quote+'</main>');
 }
