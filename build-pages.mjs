@@ -1,6 +1,6 @@
 import {writeFile} from 'node:fs/promises';
 import worker from './index.js';
-import {motif,motifStyles,motifScript} from './motif.mjs';
+import {motif,motifStyles} from './motif.mjs';
 const arch='<div class="arch"><div class="logofull" role="img" aria-label="Abu Hamid Academy logo"></div><div class="arabic" lang="ar" dir="rtl">العِلْمُ نُورٌ</div><small>KNOWLEDGE IS LIGHT</small></div>';
 const quotes = {
  '/about': ['Knowledge of self is the key to the knowledge of God.', 'The Alchemy of Happiness · Chapter I', 'https://www.ghazali.org/books/alchemy/tah05.htm'],
@@ -17,7 +17,7 @@ html=html.replace('REGISTRATION OF INTEREST','ENROLMENT INFORMATION').replace('T
 html=html.replace('Registering your interest does not confirm a place. ','').replace('Your journey begins with a first step.','Your journey begins with a first step.');
 html=html.replace(/<script>[\s\S]*?<\/script>/,'<script>document.querySelector(".menu").onclick=()=>{const n=document.querySelector(".navlinks");n.classList.toggle("open");document.querySelector(".menu").setAttribute("aria-expanded",n.classList.contains("open"))};document.querySelector(".whatsapp").onclick=()=>{const n=document.querySelector(".whatsnote");n.hidden=!n.hidden;document.querySelector(".whatsapp").setAttribute("aria-expanded",!n.hidden)};</script>');
 html=html.replace('Enrolment information in a programme or send us an enquiry using the form below.','Enrolment is opening soon. Explore our programmes and check back here for registration details.').replaceAll('Enrolment information in our programmes.','Registration details will be announced here.').replaceAll('Enrolment enquiry','Enrolment information');
-if(path==='/') html=html.replace(arch,motif).replace('</body>',motifScript+'</body>');
+if(path==='/') html=html.replace(arch,motif);
 if(path==='/about') html=html.replace(/<div class="wrap pageintro">([\s\S]*?)<\/div><section/, '<div class="wrap"><section class="hero about-hero"><div>$1</div>'+arch+'</section></div><section');
 if(path==='/' || path==='/about') html=html.replace('</head>',motifStyles+'</head>');
 const canonical='https://abuhamid.academy'+(path==='/'?'/':path+'.html');
@@ -30,6 +30,9 @@ if(quotes[path]) {
  const existing=/<section class="quote pattern">[\s\S]*?<\/section>/;
  html=existing.test(html)?html.replace(existing,quote):html.replace('</main>',quote+'</main>');
 }
+html=html.replaceAll('↗','').replaceAll('↖','').replaceAll('↘','').replaceAll('↙','');
+html=html.replace('<a class="btn" href="/contact.html#register">Enrolment information </a>', '<button class="btn login-button" type="button" title="Login will be available soon" aria-disabled="true">Log in</button>');
+html=html.replace('</head>',`<style>@font-face{font-family:'Academy Amiri';font-style:normal;font-weight:400;font-display:swap;src:url('/amiri-regular.ttf') format('truetype')}.wrap{max-width:1600px;width:100%;padding-inline:clamp(24px,4vw,72px)}.hero{background:none;isolation:isolate}.hero:before{left:calc(50% - 50vw);right:calc(50% - 50vw);z-index:-1;background-image:radial-gradient(ellipse at 80% 40%,#263b4e70,transparent 65%),linear-gradient(#ffffff03 1px,transparent 1px),linear-gradient(90deg,#ffffff03 1px,transparent 1px);background-size:auto,72px 72px,72px 72px}.hero .academy-motif{max-width:560px}.login-button{border:0;min-width:108px;justify-content:center}.arch .arabic{font-family:'Academy Amiri',serif}@media(max-width:680px){.wrap{padding-inline:24px}.hero{gap:12px}.academy-motif{max-width:400px!important}}</style></head>`);
 await writeFile(path==='/'?'index.html':path.slice(1)+'.html',html);}
 const logo=await worker.fetch(new Request('https://abuhamid.academy/logo.png'),{});await writeFile('logo.png',Buffer.from(await logo.arrayBuffer()));
 await writeFile('CNAME','abuhamid.academy\n');await writeFile('.nojekyll','');await writeFile('robots.txt','User-agent: *\nAllow: /\nSitemap: https://abuhamid.academy/sitemap.xml\n');await writeFile('sitemap.xml','<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'+paths.map(p=>'<url><loc>https://abuhamid.academy'+(p==='/'?'/':p+'.html')+'</loc></url>').join('')+'</urlset>');console.log('Built GitHub Pages website. Enrolment opening soon.');
