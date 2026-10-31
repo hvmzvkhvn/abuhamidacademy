@@ -1,4 +1,3 @@
-import http from 'node:http';import worker from './index.js';
-// Preview submissions stay in memory and are never transmitted.
-const records=new Map();const bucket={put:async(key,value)=>records.set(key,value)};
-http.createServer(async(req,res)=>{try{const chunks=[];for await(const c of req)chunks.push(c);const response=await worker.fetch(new Request('http://localhost:4173'+req.url,{method:req.method,headers:req.headers,...(!['GET','HEAD'].includes(req.method)?{body:Buffer.concat(chunks)}:{})}),{BUCKET:bucket});res.writeHead(response.status,Object.fromEntries(response.headers));res.end(Buffer.from(await response.arrayBuffer()));}catch{res.writeHead(500);res.end('Preview error');}}).listen(4173,'127.0.0.1',()=>console.log('Preview: http://localhost:4173\nPreview form submissions are temporary.'));
+import http from 'node:http';import {readFile} from 'node:fs/promises';
+const allowed=new Set(['index.html','about.html','classes.html','teacher.html','contact.html','logo.png','robots.txt','sitemap.xml']);
+http.createServer(async(req,res)=>{const p=new URL(req.url,'http://localhost').pathname;const file=p==='/'?'index.html':p.slice(1);if(!allowed.has(file)){res.writeHead(404);return res.end('Not found');}try{const data=await readFile(file);res.writeHead(200,{'Content-Type':file.endsWith('.html')?'text/html; charset=utf-8':file.endsWith('.png')?'image/png':file.endsWith('.xml')?'application/xml':'text/plain'});res.end(data);}catch{res.writeHead(404);res.end('Run npm run build first.');}}).listen(4174,'127.0.0.1',()=>console.log('http://localhost:4174'));

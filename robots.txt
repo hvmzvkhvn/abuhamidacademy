@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://abuhamid.academy/sitemap.xml

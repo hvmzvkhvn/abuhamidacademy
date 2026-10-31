@@ -1,0 +1,1 @@
+{"name":"abuhamidacademy","private":true,"type":"module","scripts":{"build":"node build-pages.mjs","start":"node preview.mjs"}}
