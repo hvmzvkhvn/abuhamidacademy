@@ -35,6 +35,11 @@ html=html.replaceAll('↗','').replaceAll('↖','').replaceAll('↘','').replace
 html=html.replace('<a class="btn" href="/contact.html#register">Enrolment information </a>', '<button class="btn login-button" type="button" title="Login will be available soon" aria-disabled="true">Log in</button>');
 html=html.replace('</head>',`<style>@font-face{font-family:'Academy Amiri';font-style:normal;font-weight:400;font-display:swap;src:url('/amiri-regular.ttf') format('truetype')}.wrap{max-width:1600px;width:100%;padding-inline:clamp(24px,4vw,72px)}.hero{background:none;isolation:isolate}.hero:before{left:calc(50% - 50vw);right:calc(50% - 50vw);z-index:-1;background-image:radial-gradient(ellipse at 80% 40%,#263b4e70,transparent 65%),linear-gradient(#ffffff03 1px,transparent 1px),linear-gradient(90deg,#ffffff03 1px,transparent 1px);background-size:auto,72px 72px,72px 72px}.hero .academy-motif{max-width:560px}.brand>span:last-child{text-align:center}.brand small{text-align:center}.login-button{border:0;min-width:108px;justify-content:center}.arch .arabic{font-family:'Academy Amiri',serif}@media(max-width:680px){.wrap{padding-inline:24px}.hero{gap:12px}.academy-motif{max-width:400px!important}}</style></head>`);
 html=editorial(html,path);
+html=html.replace(/<button class="whatsapp"[^>]*>([\s\S]*?)<\/button>/, '<a class="whatsapp" href="https://wa.me/447438864257" target="_blank" rel="noopener noreferrer" aria-label="Message Abu Hamid Academy on WhatsApp">$1</a>');
+html=html.replace(/<div class="whatsnote" hidden>[\s\S]*?<\/div>/, '');
+html=html.replace(/document\.querySelector\("\.whatsapp"\)\.onclick=\(\)=>\{[\s\S]*?\};/, '');
+html=html.replace('<p>Contact details will be available here.</p>', '<p><a class="textlink" href="https://wa.me/447438864257" target="_blank" rel="noopener noreferrer">07438 864 257 · Message us on WhatsApp</a></p>');
+html=html.replace('Applications and enquiries are not being collected yet.', 'Applications are not open yet. For general enquiries, please contact us on WhatsApp.');
 html=html.replaceAll("The Fard Ayn diploma", "The Fard Ayn Diploma").replaceAll("Adult diploma</td>", "Adult Diploma</td>");
 await writeFile(path==='/'?'index.html':path.slice(1)+'.html',html);}
 const logo=await worker.fetch(new Request('https://abuhamid.academy/logo.png'),{});await writeFile('logo.png',Buffer.from(await logo.arrayBuffer()));
