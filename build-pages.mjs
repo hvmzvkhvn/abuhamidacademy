@@ -1,5 +1,7 @@
 import {writeFile} from 'node:fs/promises';
 import worker from './index.js';
+import {motif,motifStyles,motifScript} from './motif.mjs';
+const arch='<div class="arch"><div class="logofull" role="img" aria-label="Abu Hamid Academy logo"></div><div class="arabic" lang="ar" dir="rtl">العِلْمُ نُورٌ</div><small>KNOWLEDGE IS LIGHT</small></div>';
 const quotes = {
  '/about': ['Knowledge of self is the key to the knowledge of God.', 'The Alchemy of Happiness · Chapter I', 'https://www.ghazali.org/books/alchemy/tah05.htm'],
  '/classes': ['Knowledge without action is madness and action without knowledge is void.', 'Letter to a Disciple', 'https://www.emaanlibrary.com/wp-content/uploads/2019/10/letter-to-a-disciple-english.pdf'],
@@ -15,6 +17,9 @@ html=html.replace('REGISTRATION OF INTEREST','ENROLMENT INFORMATION').replace('T
 html=html.replace('Registering your interest does not confirm a place. ','').replace('Your journey begins with a first step.','Your journey begins with a first step.');
 html=html.replace(/<script>[\s\S]*?<\/script>/,'<script>document.querySelector(".menu").onclick=()=>{const n=document.querySelector(".navlinks");n.classList.toggle("open");document.querySelector(".menu").setAttribute("aria-expanded",n.classList.contains("open"))};document.querySelector(".whatsapp").onclick=()=>{const n=document.querySelector(".whatsnote");n.hidden=!n.hidden;document.querySelector(".whatsapp").setAttribute("aria-expanded",!n.hidden)};</script>');
 html=html.replace('Enrolment information in a programme or send us an enquiry using the form below.','Enrolment is opening soon. Explore our programmes and check back here for registration details.').replaceAll('Enrolment information in our programmes.','Registration details will be announced here.').replaceAll('Enrolment enquiry','Enrolment information');
+if(path==='/') html=html.replace(arch,motif).replace('</body>',motifScript+'</body>');
+if(path==='/about') html=html.replace(/<div class="wrap pageintro">([\s\S]*?)<\/div><section/, '<div class="wrap"><section class="hero about-hero"><div>$1</div>'+arch+'</section></div><section');
+if(path==='/' || path==='/about') html=html.replace('</head>',motifStyles+'</head>');
 const canonical='https://abuhamid.academy'+(path==='/'?'/':path+'.html');
 const title=html.match(/<title>(.*?)<\/title>/)[1];
 const description=html.match(/<meta name="description" content="([^"]*)"/)[1];
