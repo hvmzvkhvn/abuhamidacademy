@@ -1,6 +1,7 @@
 import {writeFile} from 'node:fs/promises';
 import worker from './index.js';
 import {editorial} from './editorial.mjs';
+import {diploma} from './diploma.mjs';
 import {motif,motifStyles} from './motif.mjs';
 const arch='<div class="arch"><div class="logofull" role="img" aria-label="Abu Hamid Academy logo"></div><div class="arabic" lang="ar" dir="rtl">العِلْمُ نُورٌ</div><small>KNOWLEDGE IS LIGHT</small></div>';
 const quotes = {
@@ -44,6 +45,7 @@ html=html.replace(/document\.querySelector\("\.whatsapp"\)\.onclick=\(\)=>\{[\s\
 html=html.replace('<p>Contact details will be available here.</p>', '<p><a class="textlink" href="https://wa.me/447438864257" target="_blank" rel="noopener noreferrer">07438 864 257 · Message us on WhatsApp</a></p>');
 html=html.replace('Applications and enquiries are not being collected yet.', 'Applications are not open yet. For general enquiries, please contact us on WhatsApp.');
 html=html.replaceAll("The Fard Ayn diploma", "The Fard Ayn Diploma").replaceAll("Adult diploma</td>", "Adult Diploma</td>");
+html=diploma(html,path);
 await writeFile(path==='/'?'index.html':path.slice(1)+'.html',html);}
 const logo=await worker.fetch(new Request('https://abuhamid.academy/logo.png'),{});await writeFile('logo.png',Buffer.from(await logo.arrayBuffer()));
 await writeFile('CNAME','abuhamid.academy\n');await writeFile('.nojekyll','');await writeFile('robots.txt','User-agent: *\nAllow: /\nSitemap: https://abuhamid.academy/sitemap.xml\n');await writeFile('sitemap.xml','<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'+paths.map(p=>'<url><loc>https://abuhamid.academy'+(p==='/'?'/':p+'.html')+'</loc></url>').join('')+'</urlset>');console.log('Built GitHub Pages website. Enrolment opening soon.');
